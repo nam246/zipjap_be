@@ -1,0 +1,157 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  username  String
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user")
+}
+
+model Lesson {
+  id           String       @id @default(uuid())
+  lessonNumber Int          @map("lesson_number")
+  vocabulary   Vocabulary[] // 1 - n bảng Vocabulary
+  grammar      Grammar[] // 1 - n bảng Grammar
+  kanji        Kanji[] // 1 - n bảng Kanji
+  source       String? // minna no nihongo? || soumatome?
+  level        Level
+
+  @@map("lesson")
+}
+
+model Vocabulary {
+  id        String    @id @default(uuid())
+  word      String
+  kanji     Kanji?    @relation(fields: [kanjiId], references: [id])
+  romaji    String?
+  meaning   String
+  wordType  WordType  @map("word_type") // noun, verb, adjective,...
+  level     Level
+  examples  Example[]
+  media     Media[]
+  lesson    Lesson?   @relation(fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  lessonId String?
+  kanjiId  String  @unique
+
+  @@map("vocabulary")
+}
+
+model Grammar {
+  id           String    @id @default(uuid())
+  pattern      String // mẫu ngữ pháp
+  structure    String // cấu trúc
+  meaning      String // nghĩa
+  explaination String? // giải thích chi tiết
+  notes        String?
+  examples     Example[]
+  level        Level
+  lesson       Lesson?   @relation(fields: [lessonId], references: [id])
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  lessonId String?
+
+  @@map("grammar")
+}
+
+model Kanji {
+  id          String    @id @default(uuid())
+  character   String
+  onyomi      String?
+  kunyomi     String?
+  meaning     String
+  level       Level
+  strokeCount Int?      @map("stroke_count")
+  examples    Example[]
+  lesson      Lesson?   @relation(fields: [lessonId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  lessonId   String?
+  vocabulary Vocabulary?
+}
+
+model Listening {
+  id    String @id @default(uuid())
+  level Level
+
+  @@map("listening")
+}
+
+model Reading {
+  id    String @id @default(uuid())
+  level Level
+
+  @@map("reading")
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  audio     String?
+  image     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  vocabulary   Vocabulary? @relation(fields: [vocabularyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  vocabularyId String?
+}
+
+model Example {
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  vocabulary   Vocabulary? @relation(fields: [vocabularyId], references: [id])
+  vocabularyId String?
+  grammar      Grammar?    @relation(fields: [grammarId], references: [id])
+  grammarId    String?
+  kanji        Kanji?      @relation(fields: [kanjiId], references: [id])
+  kanjiId      String?
+
+  @@map("example")
+}
+
+// JLPT Level
+enum Level {
+  N5
+  N4
+  N3
+  N2
+  N1
+}
+
+enum WordType {
+  NOUN
+  VERB
+  I_ADJECTIVE
+  NA_ADJECTIVE
+  ADVERB
+  PARTICLE
+  CONJUNCTION
+  PRONOUN
+  EXPRESSION
+  COUNTER
+  OTHER
+}
