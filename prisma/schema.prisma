@@ -41,6 +41,7 @@ model Lesson {
 model Vocabulary {
   id        String    @id @default(uuid())
   word      String
+  kana      String?
   kanji     Kanji?    @relation(fields: [kanjiId], references: [id])
   romaji    String?
   meaning   String
@@ -79,6 +80,7 @@ model Grammar {
 model Kanji {
   id          String    @id @default(uuid())
   character   String
+  kana        String
   onyomi      String?
   kunyomi     String?
   meaning     String

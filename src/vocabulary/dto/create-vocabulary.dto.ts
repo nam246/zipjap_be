@@ -24,11 +24,9 @@ export class CreateVocabularyDto {
 
   lessonId: string;
 
-  @IsEnum(Level)
-  jlptLevel: Level;
-
   @IsString()
-  examples: string;
+  @IsOptional()
+  exampleId: string;
 
   @IsString()
   mediaId: string;
