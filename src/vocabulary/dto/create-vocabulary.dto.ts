@@ -1,33 +1,42 @@
-import { IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsArray } from 'class-validator';
 import { Level, WordType } from '../../generated/prisma';
 
 export class CreateVocabularyDto {
   @IsString()
-  word: string;
+  word!: string;
 
   @IsString()
   @IsOptional()
-  kanjiId?: string;
+  kana?: string; // Thêm field này
+
+  @IsString()
+  @IsOptional()
+  kanjiId?: string; // Nên xóa @unique trong model nếu nhiều vocab dùng chung kanji
 
   @IsString()
   @IsOptional()
   romaji?: string;
 
   @IsString()
-  meaning: string;
+  meaning!: string;
 
   @IsEnum(WordType)
-  wordType: WordType;
+  wordType!: WordType;
 
   @IsEnum(Level)
-  level: Level;
-
-  lessonId: string;
+  level!: Level;
 
   @IsString()
+  @IsOptional() // Nên là optional vì trong model có onDelete: SetNull
+  lessonId?: string;
+
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  exampleId: string;
+  exampleIds?: string[]; // Đổi thành mảng
 
-  @IsString()
-  mediaId: string;
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  mediaIds?: string[]; // Đổi thành mảng, và nên là optional
 }

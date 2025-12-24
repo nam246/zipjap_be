@@ -9,7 +9,7 @@ export class VocabularyService {
 
   async create(createVocabularyDto: CreateVocabularyDto) {
     try {
-      const { kanjiId, lessonId, exampleId, ...vocabularyData } =
+      const { kanjiId, lessonId, ...vocabularyData } =
         createVocabularyDto;
       return await this.prismaService.vocabulary.create({
         data: {
@@ -17,12 +17,9 @@ export class VocabularyService {
           lesson: {
             connect: { id: lessonId },
           },
-          kanji: {
+          kanjis: {
             connect: { id: kanjiId },
-          },
-          examples: {
-            connect: { id: exampleId },
-          },
+          } 
         },
       });
     } catch (error: any) {

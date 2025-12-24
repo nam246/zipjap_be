@@ -19,16 +19,16 @@ export class GrammarController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.grammarService.findOne(+id);
+    return this.grammarService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGrammarDto: UpdateGrammarDto) {
-    return this.grammarService.update(+id, updateGrammarDto);
+    return this.grammarService.update(id, updateGrammarDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.grammarService.remove(+id);
+    return this.grammarService.remove(id);
   }
 }

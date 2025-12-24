@@ -23,7 +23,7 @@ export class LessonService {
   async findAll() {
     try {
       return this.prismaService.lesson.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: {},
       });
     } catch (error) {
       console.log(error);
@@ -31,7 +31,7 @@ export class LessonService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const lesson = await this.prismaService.lesson.findUnique({
       where: { id },
     });
@@ -42,7 +42,7 @@ export class LessonService {
     return lesson;
   }
 
-  async update(id: number, updateLessonDto: UpdateLessonDto) {
+  async update(id: string, updateLessonDto: UpdateLessonDto) {
     const existingLesson = await this.prismaService.lesson.findUnique({
       where: { id },
     });
@@ -57,7 +57,7 @@ export class LessonService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const existingLesson = await this.prismaService.lesson.findUnique({
       where: { id },
     });

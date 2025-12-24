@@ -8,6 +8,7 @@ export class GrammarService {
   constructor(private prismaService: PrismaService) {}
 
   async create(createGrammarDto: CreateGrammarDto) {
+    // const {lessonId,  ...grammarData} = createGrammarDto
     try {
       return await this.prismaService.grammar.create({
         data: {
@@ -31,7 +32,7 @@ export class GrammarService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const grammar = await this.prismaService.grammar.findUnique({
       where: { id },
     });
@@ -42,7 +43,7 @@ export class GrammarService {
     return grammar;
   }
 
-  async update(id: number, updateGrammarDto: UpdateGrammarDto) {
+  async update(id: string, updateGrammarDto: UpdateGrammarDto) {
     const existingGrammar = await this.prismaService.grammar.findUnique({
       where: { id },
     });
@@ -57,7 +58,7 @@ export class GrammarService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const existingGrammar = await this.prismaService.grammar.findUnique({
       where: { id },
     });

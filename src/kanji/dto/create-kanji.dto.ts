@@ -1,9 +1,13 @@
-import { IsString, IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsArray, IsInt, Min } from 'class-validator';
 import { Level } from '../../generated/prisma';
+import { Type } from 'class-transformer';
 
 export class CreateKanjiDto {
   @IsString()
-  character: string;
+  character!: string; // @unique trong model
+
+  @IsString()
+  kana!: string;
 
   @IsString()
   @IsOptional()
@@ -14,17 +18,26 @@ export class CreateKanjiDto {
   kunyomi?: string;
 
   @IsString()
-  meaning: string;
+  meaning!: string;
 
   @IsEnum(Level)
-  level: Level;
+  level!: Level;
 
-  @IsNumber()
+  @IsInt()
   @Min(1)
   @IsOptional()
+  @Type(() => Number)
   strokeCount?: number;
 
   @IsString()
   @IsOptional()
-  lessonId: string;
+  lessonId?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  exampleIds?: string[];
+
+  // KHÔNG thêm vocabularyIds vào đây
+  // Vì Vocabulary sẽ tự link đến Kanji khi tạo
 }

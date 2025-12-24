@@ -11,7 +11,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  // provider = "postgresql"
+  provider = "sqlite" // for local dev test
 }
 
 model User {
@@ -28,71 +29,94 @@ model User {
 
 model Lesson {
   id           String       @id @default(uuid())
-  lessonNumber Int          @map("lesson_number")
-  vocabulary   Vocabulary[] // 1 - n bảng Vocabulary
-  grammar      Grammar[] // 1 - n bảng Grammar
-  kanji        Kanji[] // 1 - n bảng Kanji
+  lessonNumber Int          @unique @map("lesson_number") // Thêm @unique vì số bài không trùng
+  vocabularies Vocabulary[] @relation("LessonVocabularies") // 1 - n bảng Vocabulary
+  grammars     Grammar[]    @relation("LessonGrammars") // 1 - n bảng Grammar
+  kanjis       Kanji[]      @relation("LessonKanjis") // 1 - n bảng Kanji
   source       String? // minna no nihongo? || soumatome?
   level        Level
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
 
+  @@index([level]) // Index cho query theo level
+  @@index([source]) // Index cho query theo source
   @@map("lesson")
 }
 
 model Vocabulary {
-  id        String    @id @default(uuid())
+  id        String              @id @default(uuid())
   word      String
   kana      String?
-  kanji     Kanji?    @relation(fields: [kanjiId], references: [id])
   romaji    String?
   meaning   String
-  wordType  WordType  @map("word_type") // noun, verb, adjective,...
+  wordType  WordType            @map("word_type")
   level     Level
   examples  Example[]
   media     Media[]
-  lesson    Lesson?   @relation(fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  lesson    Lesson?             @relation("LessonVocabularies", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  kanjis    VocabularyKanji[]   // Many-to-Many qua bảng trung gian
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
 
   lessonId String?
-  kanjiId  String  @unique
 
+  @@index([lessonId])
   @@map("vocabulary")
 }
 
 model Grammar {
   id           String    @id @default(uuid())
-  pattern      String // mẫu ngữ pháp
-  structure    String // cấu trúc
-  meaning      String // nghĩa
-  explaination String? // giải thích chi tiết
+  pattern      String
+  structure    String
+  meaning      String
+  explanation  String? // Sửa typo
   notes        String?
   examples     Example[]
   level        Level
-  lesson       Lesson?   @relation(fields: [lessonId], references: [id])
+  lesson       Lesson?   @relation("LessonGrammars", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade) // Thêm relation name
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
   lessonId String?
 
+  @@index([lessonId])
   @@map("grammar")
 }
 
 model Kanji {
-  id          String    @id @default(uuid())
-  character   String
-  kana        String
-  onyomi      String?
-  kunyomi     String?
-  meaning     String
-  level       Level
-  strokeCount Int?      @map("stroke_count")
-  examples    Example[]
-  lesson      Lesson?   @relation(fields: [lessonId], references: [id])
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id            String            @id @default(uuid())
+  character     String            @unique
+  kana          String
+  onyomi        String?
+  kunyomi       String?
+  meaning       String
+  level         Level
+  strokeCount   Int?              @map("stroke_count")
+  examples      Example[]
+  vocabularies  VocabularyKanji[] // Many-to-Many qua bảng trung gian
+  lesson        Lesson?           @relation("LessonKanjis", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
 
-  lessonId   String?
-  vocabulary Vocabulary?
+  lessonId String?
+
+  @@index([lessonId])
+  @@map("kanji")
+}
+
+model VocabularyKanji {
+  id           String     @id @default(uuid())
+  vocabulary   Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  kanji        Kanji      @relation(fields: [kanjiId], references: [id], onDelete: Cascade)
+  position     Int? // Vị trí của kanji trong từ (tuỳ chọn)
+  
+  vocabularyId String
+  kanjiId      String
+
+  @@unique([vocabularyId, kanjiId]) // Không cho trùng lặp
+  @@index([vocabularyId])
+  @@index([kanjiId])
+  @@map("vocabulary_kanji")
 }
 
 model Listening {
