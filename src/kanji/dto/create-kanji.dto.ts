@@ -1,5 +1,12 @@
-import { IsString, IsEnum, IsOptional, IsArray, IsInt, Min } from 'class-validator';
-import { Level } from '../../generated/prisma';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsArray,
+  IsInt,
+  Min,
+} from 'class-validator';
+import { Level } from '../../generated/prisma/client';
 import { Type } from 'class-transformer';
 
 export class CreateKanjiDto {

@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsOptional, IsInt, Min } from 'class-validator';
-import { Level } from '../../generated/prisma';
+import { Level } from '../../generated/prisma/client';
 import { Type } from 'class-transformer';
 
 export class CreateLessonDto {

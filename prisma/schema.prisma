@@ -5,14 +5,14 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "../src/generated/prisma"
-  engineType = "binary"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "commonjs"
 }
 
 datasource db {
-  // provider = "postgresql"
-  provider = "sqlite" // for local dev test
+  provider = "postgresql"
+  // provider = "sqlite" // for local dev test
 }
 
 model User {
@@ -44,19 +44,19 @@ model Lesson {
 }
 
 model Vocabulary {
-  id        String              @id @default(uuid())
+  id        String            @id @default(uuid())
   word      String
   kana      String?
   romaji    String?
   meaning   String
-  wordType  WordType            @map("word_type")
+  wordType  WordType          @map("word_type")
   level     Level
   examples  Example[]
   media     Media[]
-  lesson    Lesson?             @relation("LessonVocabularies", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  kanjis    VocabularyKanji[]   // Many-to-Many qua bảng trung gian
-  createdAt DateTime            @default(now()) @map("created_at")
-  updatedAt DateTime            @updatedAt @map("updated_at")
+  lesson    Lesson?           @relation("LessonVocabularies", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  kanjis    VocabularyKanji[] // Many-to-Many qua bảng trung gian
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
 
   lessonId String?
 
@@ -65,17 +65,17 @@ model Vocabulary {
 }
 
 model Grammar {
-  id           String    @id @default(uuid())
-  pattern      String
-  structure    String
-  meaning      String
-  explanation  String? // Sửa typo
-  notes        String?
-  examples     Example[]
-  level        Level
-  lesson       Lesson?   @relation("LessonGrammars", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade) // Thêm relation name
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  id          String    @id @default(uuid())
+  pattern     String
+  structure   String
+  meaning     String
+  explanation String? // Sửa typo
+  notes       String?
+  examples    Example[]
+  level       Level
+  lesson      Lesson?   @relation("LessonGrammars", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade) // Thêm relation name
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   lessonId String?
 
@@ -84,19 +84,19 @@ model Grammar {
 }
 
 model Kanji {
-  id            String            @id @default(uuid())
-  character     String            @unique
-  kana          String
-  onyomi        String?
-  kunyomi       String?
-  meaning       String
-  level         Level
-  strokeCount   Int?              @map("stroke_count")
-  examples      Example[]
-  vocabularies  VocabularyKanji[] // Many-to-Many qua bảng trung gian
-  lesson        Lesson?           @relation("LessonKanjis", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  createdAt     DateTime          @default(now()) @map("created_at")
-  updatedAt     DateTime          @updatedAt @map("updated_at")
+  id           String            @id @default(uuid())
+  character    String            @unique
+  kana         String
+  onyomi       String?
+  kunyomi      String?
+  meaning      String
+  level        Level
+  strokeCount  Int?              @map("stroke_count")
+  examples     Example[]
+  vocabularies VocabularyKanji[] // Many-to-Many qua bảng trung gian
+  lesson       Lesson?           @relation("LessonKanjis", fields: [lessonId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
 
   lessonId String?
 
@@ -105,11 +105,11 @@ model Kanji {
 }
 
 model VocabularyKanji {
-  id           String     @id @default(uuid())
-  vocabulary   Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
-  kanji        Kanji      @relation(fields: [kanjiId], references: [id], onDelete: Cascade)
-  position     Int? // Vị trí của kanji trong từ (tuỳ chọn)
-  
+  id         String     @id @default(uuid())
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  kanji      Kanji      @relation(fields: [kanjiId], references: [id], onDelete: Cascade)
+  position   Int? // Vị trí của kanji trong từ (tuỳ chọn)
+
   vocabularyId String
   kanjiId      String
 
@@ -142,6 +142,8 @@ model Media {
 
   vocabulary   Vocabulary? @relation(fields: [vocabularyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   vocabularyId String?
+
+  @@map("media")
 }
 
 model Example {
