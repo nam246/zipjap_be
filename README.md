@@ -31,6 +31,12 @@
 $ pnpm install
 ```
 
+## Generate and Migrate Prisma Client
+```bash
+$ pnpm dlx prisma generate
+$ pnpm dlx prisma migrate dev
+```
+
 ## Compile and run the project
 
 ```bash
