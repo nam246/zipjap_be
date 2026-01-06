@@ -11,7 +11,14 @@ import { QuestionModule } from './question/question.module';
 import { MockTestModule } from './mock-test/mock-test.module';
 
 @Module({
-  imports: [VocabularyModule, LessonModule, GrammarModule, KanjiModule, QuestionModule, MockTestModule],
+  imports: [
+    VocabularyModule,
+    LessonModule,
+    GrammarModule,
+    KanjiModule,
+    QuestionModule,
+    MockTestModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -27,10 +27,10 @@ model User {
 }
 
 model Lesson {
-  id           String  @id @default(uuid())
-  lessonNumber Int     @unique @map("lesson_number") // Thêm @unique vì số bài không trùng
-  source       Source? // minna no nihongo? || soumatome?
-  level        Level
+  id          String @id @default(uuid())
+  lessonTitle String @map("lesson_title") // Thay thành lessonTitle VD: "Unit 1: Danh từ" hoặc "Bài 1" hoặc "Section 1: Chào hỏi"
+  source      Source @default(OTHER) // minna no nihongo? || soumatome?
+  level       Level
 
   vocabularies Vocabulary[] @relation("LessonVocabularies") // 1 - n bảng Vocabulary
   grammars     Grammar[]    @relation("LessonGrammars") // 1 - n bảng Grammar
@@ -168,6 +168,7 @@ model Example {
   @@map("example")
 }
 
+// Mock test relation table 
 model Test {
   id    String @id @default(uuid())
   level Level
@@ -239,6 +240,7 @@ enum WordType {
 enum Source {
   MINNA_NO_NIHONGO
   SOUMATOME
+  OTHER
 }
 
 // Trong bài thi JLPT có các loại câu hỏi

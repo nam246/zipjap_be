@@ -1,15 +1,15 @@
 import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { grammarData } from './seed-data/grammar-data';
-import { kanjisData } from './seed-data/kanji-data';
-import vocabularyData from './seed-data/vocabulary-data';
+import { lessonsData } from './data';
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
 });
 
 const prisma = new PrismaClient({ adapter });
+
 async function main() {
+  console.log('🌱 Starting seed...');
   const alice = await prisma.user.upsert({
     where: { email: 'alice@prisma.io' },
     update: {},
@@ -30,48 +30,36 @@ async function main() {
       password: '123456789',
     },
   });
-  console.log({ alice, bob });
+  console.log('created user', bob, alice);
 
-  for (const grammar of grammarData) {
-    const { examples, ...grammarWithoutExamples } = grammar;
+  // Xóa data cũ
+  console.log('🗑️  Cleaning old data...');
+  await prisma.example.deleteMany();
+  await prisma.vocabularyKanji.deleteMany();
+  await prisma.vocabulary.deleteMany();
+  await prisma.grammar.deleteMany();
+  await prisma.kanji.deleteMany();
+  await prisma.lesson.deleteMany();
 
-    await prisma.grammar.create({
-      data: {
-        ...grammarWithoutExamples,
-        examples: {
-          create: examples,
-        },
-      },
-    });
-  }
-  console.log('created grammar data');
-
-  for (const vocabulary of vocabularyData) {
-    const { examples, ...data } = vocabulary;
-
-    await prisma.vocabulary.create({
-      data: {
-        ...data,
-        examples: {
-          create: examples,
-        },
-      },
-    });
-  }
-  console.log('created vocabulary data');
-
-  for (const kanji of kanjisData) {
+  // Tạo lessons với nested data
+  console.log('📚 Creating lessons...');
+  let count = 0;
+  for (const lesson of lessonsData) {
+    await prisma.lesson.create({ data: lesson });
+    count++;
+    if (count % 10 === 0) {
+      console.log(`✅ Created ${count}/${lessonsData.length} lessons`);
+    }
   }
 
-  console.log('kanji create pending...');
+  console.log('🎉 Seed completed!');
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
+  .catch((e) => {
+    console.error('❌ Seed failed:', e);
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });

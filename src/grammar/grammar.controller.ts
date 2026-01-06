@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { GrammarService } from './grammar.service';
 import { CreateGrammarDto } from './dto/create-grammar.dto';
 import { UpdateGrammarDto } from './dto/update-grammar.dto';
@@ -8,18 +16,40 @@ export class GrammarController {
   constructor(private readonly grammarService: GrammarService) {}
 
   @Post()
-  create(@Body() createGrammarDto: CreateGrammarDto) {
-    return this.grammarService.create(createGrammarDto);
+  async create(@Body() createGrammarDto: CreateGrammarDto) {
+    try {
+      return await this.grammarService.create(createGrammarDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.grammarService.findAll();
+  async findAll() {
+    try {
+      return await this.grammarService.findAll();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  @Get()
+  async findGrammarByLevel(@Param('level') level: string) {
+    try {
+      return await this.grammarService.findGrammarByLevel(level);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.grammarService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return this.grammarService.findOne(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Patch(':id')

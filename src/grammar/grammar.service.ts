@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGrammarDto } from './dto/create-grammar.dto';
 import { UpdateGrammarDto } from './dto/update-grammar.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Level } from '../generated/prisma/enums';
 
 @Injectable()
 export class GrammarService {
@@ -26,6 +27,23 @@ export class GrammarService {
       return this.prismaService.grammar.findMany({
         orderBy: { createdAt: 'desc' },
       });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async findGrammarByLevel(level: string) {
+    try {
+      const grammar = await this.prismaService.grammar.findMany({
+        where: { level: level as Level },
+      });
+      if (grammar.length < 0) {
+        throw new NotFoundException(
+          `There are no grammar at this ${level} yet!`,
+        );
+      }
+      return grammar;
     } catch (error) {
       console.log(error);
       throw error;

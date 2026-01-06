@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { MockTestService } from './mock-test.service';
 import { CreateMockTestDto } from './dto/create-mock-test.dto';
 import { UpdateMockTestDto } from './dto/update-mock-test.dto';
@@ -23,7 +31,10 @@ export class MockTestController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMockTestDto: UpdateMockTestDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateMockTestDto: UpdateMockTestDto,
+  ) {
     return this.mockTestService.update(+id, updateMockTestDto);
   }
 
