@@ -21,12 +21,18 @@ export class VocabularyController {
       return this.vocabularyService.create(createVocabularyDto);
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
 
   @Get()
-  findAll() {
-    return this.vocabularyService.findAll();
+  async findAll() {
+    try {
+      return this.vocabularyService.findAll();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   @Get(':id')
