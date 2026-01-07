@@ -17,12 +17,8 @@ export class KanjiController {
   constructor(private readonly kanjiService: KanjiService) {}
 
   @Post()
-  async create(@Body() createKanjiDto: CreateKanjiDto) {
-    try {
-      return await this.kanjiService.create(createKanjiDto);
-    } catch (error) {
-      console.log(error);
-    }
+  create(@Body() createKanjiDto: CreateKanjiDto) {
+    return this.kanjiService.create(createKanjiDto);
   }
 
   @Get()

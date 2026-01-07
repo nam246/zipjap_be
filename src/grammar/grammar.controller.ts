@@ -16,40 +16,23 @@ export class GrammarController {
   constructor(private readonly grammarService: GrammarService) {}
 
   @Post()
-  async create(@Body() createGrammarDto: CreateGrammarDto) {
-    try {
-      return await this.grammarService.create(createGrammarDto);
-    } catch (error) {
-      console.log(error);
-    }
+  create(@Body() createGrammarDto: CreateGrammarDto) {
+    return this.grammarService.create(createGrammarDto);
   }
 
   @Get()
-  async findAll() {
-    try {
-      return await this.grammarService.findAll();
-    } catch (error) {
-      console.log(error);
-    }
+  findAll() {
+    return this.grammarService.findAll();
   }
 
   @Get()
-  async findGrammarByLevel(@Param('level') level: string) {
-    try {
-      return await this.grammarService.findGrammarByLevel(level);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  findGrammarByLevel(@Param('level') level: string) {
+    return this.grammarService.findGrammarByLevel(level);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    try {
-      return this.grammarService.findOne(id);
-    } catch (error) {
-      console.log(error);
-    }
+  findOne(@Param('id') id: string) {
+    return this.grammarService.findOne(id);
   }
 
   @Patch(':id')

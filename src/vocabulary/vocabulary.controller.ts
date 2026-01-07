@@ -17,22 +17,12 @@ export class VocabularyController {
 
   @Post()
   create(@Body() createVocabularyDto: CreateVocabularyDto) {
-    try {
-      return this.vocabularyService.create(createVocabularyDto);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return this.vocabularyService.create(createVocabularyDto);
   }
 
   @Get()
-  async findAll() {
-    try {
-      return this.vocabularyService.findAll();
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+  findAll() {
+    return this.vocabularyService.findAll();
   }
 
   @Get(':id')
