@@ -30,7 +30,7 @@ export class LessonService {
       throw error;
     }
   }
-
+  
   async findOne(id: string) {
     const lesson = await this.prismaService.lesson.findUnique({
       where: { id },

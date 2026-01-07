@@ -11,6 +11,7 @@ import {
 import { KanjiService } from './kanji.service';
 import { CreateKanjiDto } from './dto/create-kanji.dto';
 import { UpdateKanjiDto } from './dto/update-kanji.dto';
+import { QueryKanjiDto } from './dto/query-kanji.dto';
 
 @Controller('kanji')
 export class KanjiController {
@@ -24,6 +25,11 @@ export class KanjiController {
   @Get()
   findAll(@Query('page') page: string, @Query('limit') limit: string) {
     return this.kanjiService.findAll(+page, +limit);
+  }
+
+  @Get('/flashcards')
+  getFlashcards(@Query() dto: QueryKanjiDto & { quantity?: number }) {
+    return this.kanjiService.getFlashcards(dto);
   }
 
   @Get(':id')

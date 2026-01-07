@@ -141,9 +141,10 @@ model Reading {
 }
 
 model Media {
-  id        String   @id @default(uuid())
-  audio     String?
-  image     String?
+  id    String  @id @default(uuid())
+  audio String?
+  image String?
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

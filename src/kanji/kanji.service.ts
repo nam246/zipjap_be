@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateKanjiDto } from './dto/create-kanji.dto';
 import { UpdateKanjiDto } from './dto/update-kanji.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { QueryKanjiDto } from './dto/query-kanji.dto';
 
 @Injectable()
 export class KanjiService {
@@ -48,6 +49,12 @@ export class KanjiService {
       console.log(error);
       throw error;
     }
+  }
+
+  async getFlashcards(dto: QueryKanjiDto & { quantity?: number }) {
+    return await this.prismaService.kanji.findMany({
+      where: { level: dto.level },
+    });
   }
 
   async findOne(id: string) {

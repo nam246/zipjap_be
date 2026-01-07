@@ -3,6 +3,7 @@ import { CreateGrammarDto } from './dto/create-grammar.dto';
 import { UpdateGrammarDto } from './dto/update-grammar.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Level } from '../generated/prisma/enums';
+import { QueryGrammarDto } from './dto/query-grammar.dto';
 
 @Injectable()
 export class GrammarService {
@@ -22,10 +23,14 @@ export class GrammarService {
     }
   }
 
-  async findAll() {
+  async findAll(queryGrammarDto: QueryGrammarDto) {
     try {
       return this.prismaService.grammar.findMany({
         orderBy: { createdAt: 'desc' },
+        where: {
+          level: queryGrammarDto.level,
+          lessonId: queryGrammarDto.lessonId,
+        },
       });
     } catch (error) {
       console.log(error);
