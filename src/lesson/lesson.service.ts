@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Level } from '../generated/prisma/enums';
 
 @Injectable()
 export class LessonService {
@@ -20,17 +21,18 @@ export class LessonService {
     }
   }
 
-  async findAll() {
+  async findAll(level?: string) {
     try {
       return this.prismaService.lesson.findMany({
         orderBy: {},
+        where: { level: level?.toUpperCase() as Level },
       });
     } catch (error) {
       console.log(error);
       throw error;
     }
   }
-  
+
   async findOne(id: string) {
     const lesson = await this.prismaService.lesson.findUnique({
       where: { id },

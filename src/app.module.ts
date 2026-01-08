@@ -9,7 +9,6 @@ import { GrammarModule } from './grammar/grammar.module';
 import { KanjiModule } from './kanji/kanji.module';
 import { QuestionModule } from './question/question.module';
 import { MockTestModule } from './mock-test/mock-test.module';
-import { FlashcardsModule } from './flashcards/flashcards.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { FlashcardsModule } from './flashcards/flashcards.module';
     KanjiModule,
     QuestionModule,
     MockTestModule,
-    FlashcardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

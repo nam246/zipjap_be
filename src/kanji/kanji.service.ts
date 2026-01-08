@@ -3,6 +3,7 @@ import { CreateKanjiDto } from './dto/create-kanji.dto';
 import { UpdateKanjiDto } from './dto/update-kanji.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { QueryKanjiDto } from './dto/query-kanji.dto';
+import { Level } from '../generated/prisma/enums';
 
 @Injectable()
 export class KanjiService {
@@ -25,26 +26,12 @@ export class KanjiService {
     }
   }
 
-  async findAll(page: number = 1, limit: number = 10) {
+  async findAll(level?: string) {
     try {
-      const skip = (page - 1) * limit;
-      const take = limit;
-      const [data, total] = await this.prismaService.$transaction([
-        this.prismaService.kanji.findMany({
-          skip,
-          take,
-          orderBy: { createdAt: 'desc' },
-        }),
-        this.prismaService.kanji.count(),
-      ]);
-
-      return {
-        data,
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      };
+      return await this.prismaService.kanji.findMany({
+        orderBy: { createdAt: 'desc' },
+        where: { level: level?.toUpperCase() as Level },
+      });
     } catch (error) {
       console.log(error);
       throw error;
@@ -60,6 +47,7 @@ export class KanjiService {
   async findOne(id: string) {
     const kanji = await this.prismaService.kanji.findUnique({
       where: { id },
+      include: { examples: true },
     });
 
     if (!kanji) {

@@ -23,8 +23,8 @@ export class KanjiController {
   }
 
   @Get()
-  findAll(@Query('page') page: string, @Query('limit') limit: string) {
-    return this.kanjiService.findAll(+page, +limit);
+  findAll(@Query('level') level?: string) {
+    return this.kanjiService.findAll(level);
   }
 
   @Get('/flashcards')

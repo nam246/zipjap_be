@@ -44,28 +44,32 @@ export class VocabularyService {
   }
 
   async getFlashcards(dto: QueryVocabularyDto & { quantity?: number }) {
-    try {
-      return await this.prismaService.vocabulary.findMany({
-        where: { level: dto.level },
-        take: dto.quantity !== undefined ? dto.quantity : 10,
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await this.prismaService.vocabulary.findMany({
+      where: { level: dto.level },
+      take: dto.quantity !== undefined ? dto.quantity : 10,
+    });
   }
 
   async findByLessonId(lessonId: string) {
     try {
       return await this.prismaService.vocabulary.findMany({
         where: { lessonId: lessonId },
+        include: { examples: true },
       });
     } catch (error) {
       throw new NotFoundException(error);
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vocabulary`;
+  async findOne(id: string) {
+    try {
+      return await this.prismaService.vocabulary.findUnique({
+        where: { id: id },
+        include: { examples: true },
+      });
+    } catch (error) {
+      throw new NotFoundException(error);
+    }
   }
 
   update(id: number, updateVocabularyDto: UpdateVocabularyDto) {
